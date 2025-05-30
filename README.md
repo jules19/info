@@ -2,7 +2,7 @@
 
 ## **Overview**
 
-This HTML file (asperiq\_cryptoag\_spa.html) is a single-page interactive web application (SPA) designed to present and explore the findings of a detailed report on the encryption company Asperiq and its historical connections to Crypto AG. The application aims to make the complex information from the source report easily consumable, navigable, and understandable through an interactive user interface.
+This HTML file is a single-page interactive web application (SPA) designed to present and explore the findings of a detailed report on the encryption company Asperiq and its historical connections to Crypto AG. The application aims to make the complex information from the source report easily consumable, navigable, and understandable through an interactive user interface.
 
 ## **Purpose**
 
