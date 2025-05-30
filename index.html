@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asperiq: Navigating the Legacy of Crypto AG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices: 
+        - Report Info: Timeline of Crypto AG, CIAG, Asperiq. Goal: Show rapid succession. Viz/Method: HTML/CSS Vertical Timeline. Interaction: Scroll-based. Justification: Clear chronological display. Library: Custom.
+        - Report Info: Asperiq Founders/Leadership. Goal: Detail key personnel. Viz/Method: Interactive HTML Cards. Interaction: Click/Hover to expand. Justification: Concise initial view, detailed on demand. Library: Vanilla JS.
+        - Report Info: Asperiq Products. Goal: Showcase offerings. Viz/Method: Interactive HTML Cards. Interaction: Click/Hover to expand. Justification: Organized product display. Library: Vanilla JS.
+        - Textual summaries and key findings from the report will be used directly. No complex charts are needed as the report is primarily qualitative.
+        - CONFIRMING NO SVG/Mermaid. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(243, 244, 246, 0.9); /* bg-gray-100 with opacity */
+            backdrop-filter: blur(10px);
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #0D9488; /* teal-600 */
+        }
+        .content-section {
+            padding-top: 4rem; /* Adjust based on nav height */
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #E5E7EB; /* gray-200 */
+        }
+        .content-section:last-child {
+            border-bottom: none;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem; /* Space for the dot and line */
+        }
+        .timeline-item:before { /* Vertical line */
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0.25rem;
+            bottom: 0;
+            width: 2px;
+            background-color: #0D9488; /* teal-600 */
+        }
+        .timeline-item:last-child:before {
+            height: 0.25rem; /* End line at the last dot */
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #0D9488; /* teal-600 */
+            border: 2px solid white;
+        }
+        .expandable-card .details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .expandable-card.open .details {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Default max-width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px; /* Max height */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .chart-container {
+                height: 350px;
+                max-width: 700px;
+            }
+        }
+        h1, h2, h3 {
+            font-weight: 600; /* semibold */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="sticky-nav shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-teal-700">Asperiq Report</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#executive-summary" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Summary</a>
+                        <a href="#crypto-ag-legacy" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Crypto AG</a>
+                        <a href="#transition" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Transition</a>
+                        <a href="#asperiq-unveiled" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Asperiq</a>
+                        <a href="#operations" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Operations</a>
+                        <a href="#controversies" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Controversies</a>
+                        <a href="#conclusion" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Conclusion</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-teal-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#executive-summary" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Summary</a>
+                <a href="#crypto-ag-legacy" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Crypto AG</a>
+                <a href="#transition" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Transition</a>
+                <a href="#asperiq-unveiled" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Asperiq</a>
+                <a href="#operations" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Operations</a>
+                <a href="#controversies" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Controversies</a>
+                <a href="#conclusion" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-700">Conclusion</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="executive-summary" class="content-section">
+            <h1 class="text-3xl font-bold text-teal-700 mb-6">Asperiq: Navigating the Legacy of Crypto AG</h1>
+            <p class="text-lg mb-4">This interactive report explores Asperiq, an encryption and cybersecurity company, and its deep-rooted connections to the infamous Crypto AG. Crypto AG was secretly owned by intelligence agencies (CIA and BND) for decades, selling compromised encryption devices globally. Asperiq, founded by Andreas and Emma Linde (also founders of Crypto AG's successor, CIAG), emerged after CIAG's collapse due to Swiss export bans following the scandal. This application allows you to delve into Asperiq's origins, leadership, products, operations, and the controversies it faces.</p>
+            <div class="bg-amber-100 border-l-4 border-amber-500 text-amber-700 p-4 rounded-md shadow" role="alert">
+                <p class="font-bold">Key Takeaway</p>
+                <p>Asperiq's direct lineage from Crypto AG, continuity in ownership and key personnel, and the opaque transition from CIAG cast a persistent shadow over its claims of independence and trustworthiness, demanding high scrutiny.</p>
+            </div>
+        </section>
+
+        <section id="crypto-ag-legacy" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">The Crypto AG Legacy: A Shadow of Espionage</h2>
+            <p class="mb-4">The story of Asperiq is inseparable from the legacy of Crypto AG. Founded in 1952, Crypto AG became a leading encryption machine supplier. However, from 1970, it was secretly owned by the CIA and German BND. These agencies manipulated Crypto AG's devices, allowing them to decrypt communications of over 120 countries. This "intelligence coup of the century" severely damaged trust in secure communications and Switzerland's neutrality. The full extent was revealed in 2020, though Crypto AG was liquidated in 2018, splitting into CyOne Security (Swiss market) and Crypto International AG (international market).</p>
+            <p class="italic text-gray-600">This history of betrayal and compromised security forms a critical backdrop to understanding Asperiq's challenges in establishing trust, especially with government and critical infrastructure clients.</p>
+        </section>
+
+        <section id="transition" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">From Crypto AG to Asperiq: A Contentious Transition</h2>
+            <p class="mb-6">This section details the timeline of events from the original Crypto AG to the formation of Asperiq. It highlights the rapid succession of companies and the regulatory actions that shaped this transition. Understanding this timeline is crucial to grasping the context in which Asperiq operates and the scrutiny it faces due to its origins.</p>
+            <div class="relative">
+                <div id="timeline-container" class="space-y-2">
+                    </div>
+            </div>
+        </section>
+
+        <section id="asperiq-unveiled" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Asperiq Unveiled: Founders, Leadership, Structure, and Products</h2>
+            <p class="mb-6">This section provides an overview of Asperiq's core components: its founders, key leadership personnel (many with direct ties to Crypto AG/CIAG), its corporate structure spanning Sweden and Switzerland, and its main product offerings. Interactive cards allow you to explore details about specific individuals and products.</p>
+            
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Founders & Key Leadership</h3>
+                <p class="mb-4">Asperiq was founded by Swedish entrepreneurs Andreas and Emma Victoria Linde, who also owned Crypto International AG (CIAG). Several key management figures at Asperiq have direct ties to CIAG and the original Crypto AG, signifying continuity in expertise and institutional memory. Click on a name to see more details.</p>
+                <div id="leadership-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    </div>
+            </div>
+
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Corporate Structure</h3>
+                 <p class="mb-4">Asperiq operates with entities in Sweden (Asperiq Group AB, the parent) and Switzerland (Asperiq AG, the operating company, and Asperiq Group AG, a Swiss holding company). This structure reflects its European identity but also connects it directly to the Lindes' previous ventures. Below is a simplified representation of this structure.</p>
+                <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+                    <div class="text-center font-semibold text-gray-700">Asperiq Group AB (Sweden)</div>
+                    <div class="text-center text-2xl my-2">⇩</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
+                        <div class="p-4 bg-teal-50 rounded-md border border-teal-200">
+                            <div class="font-medium text-teal-700">Asperiq AG (Switzerland)</div>
+                            <div class="text-sm text-gray-600">(Operating Company)</div>
+                        </div>
+                        <div class="p-4 bg-sky-50 rounded-md border border-sky-200">
+                             <div class="font-medium text-sky-700">Asperiq Group AG (Switzerland)</div>
+                             <div class="text-sm text-gray-600">(Holding Company)</div>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600 text-center">Owned by Andreas & Emma Linde.</p>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-xl font-semibold text-teal-600 mb-3">Products and Services</h3>
+                <p class="mb-4">Asperiq offers advanced cybersecurity solutions, focusing on high-security encryption for governments, defense, and critical infrastructure. Key offerings include their IP-VPN platform, Hardware Security Trust Anchor (HSTA), and quantum-safe technologies. Click on a product to learn more.</p>
+                <div id="products-container" class="grid md:grid-cols-2 gap-6">
+                    </div>
+            </div>
+        </section>
+
+        <section id="operations" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Operational Landscape: Switzerland and Malaysia</h2>
+            <p class="mb-6">Asperiq's operations are primarily based in Switzerland and Sweden, with a strategic focus on expansion in regions like Malaysia. The regulatory environment in Switzerland, particularly post-Crypto AG scandal, heavily influences its activities, especially concerning export licenses managed by SECO. Its presence in Malaysia is part of its international outreach, targeting a market potentially less directly affected by the European scandal.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-teal-600 mb-3">Switzerland</h3>
+                    <p class="mb-2">Operations in Switzerland are subject to strict export controls for dual-use goods (like encryption technology) by the Swiss State Secretariat for Economic Affairs (SECO). The Crypto AG scandal led to investigations and regulatory actions impacting its successors.</p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700 mb-3">
+                        <li>SECO suspended CIAG's export licenses, an action later criticized by the Parliamentary Investigation Commission (PUK GPDel).</li>
+                        <li>PUK GPDel report (Nov 2020) confirmed Swiss intelligence knew of Crypto AG's compromise. It recommended processing export applications for successor companies if legally sound.</li>
+                        <li>This paved a way for Asperiq AG (formed Aug 2020) to potentially obtain licenses, though under intense scrutiny due to its lineage.</li>
+                        <li>PUK's recommendation to favor domestic suppliers for Swiss government needs presents both an opportunity and challenge for Swedish-owned Asperiq AG.</li>
+                    </ul>
+                    <p class="italic text-sm text-gray-600">Asperiq AG's Swiss operations are characterized by a complex regulatory path cleared after the PUK report, but continuous scrutiny due to its heritage remains.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-teal-600 mb-3">Malaysia</h3>
+                    <p class="mb-2">Asperiq has a physical office in Kuala Lumpur and key personnel focused on the Asia Pacific region. This suggests a strategic effort to develop markets away from the immediate European fallout.</p>
+                     <ul class="list-disc list-inside space-y-1 text-gray-700 mb-3">
+                        <li>Targets governments, NGOs, and critical infrastructure in Southeast Asia.</li>
+                        <li>No public information details specific Malaysian clients or major projects.</li>
+                        <li>No reported operational issues or shutdowns in Malaysia.</li>
+                        <li>Malaysia's own cybersecurity needs create a potential market for Asperiq's solutions.</li>
+                    </ul>
+                    <p class="italic text-sm text-gray-600">Malaysia and Southeast Asia could be key for Asperiq's growth, offering a chance to build a new track record, though demonstrating trustworthiness remains paramount.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="controversies" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Controversies, Scandals, and Areas of Concern</h2>
+            <p class="mb-6">Asperiq operates under a significant cloud of controversy, primarily due to its direct lineage from Crypto AG and the circumstances of its creation. These issues challenge its claims of independence and the trustworthiness of its security solutions.</p>
+            <div class="space-y-4">
+                <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 rounded-md shadow">
+                    <h4 class="font-bold">Crypto AG/CIAG Lineage</h4>
+                    <p>Founded by Andreas and Emma Linde (owners of CIAG, successor to Crypto AG). Key personnel (e.g., CISO Jürg Eiholzer) transitioned from Crypto AG/CIAG, indicating continuity of institutional knowledge and practices.</p>
+                </div>
+                <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 rounded-md shadow">
+                    <h4 class="font-bold">Transparency of Transition</h4>
+                    <p>Lack of public detail on the asset/IP transfer from CIAG to Asperiq AG when CIAG ceased operations. Asperiq Group AB (Sweden) was to "take over activities" of CIAG, but specifics for Asperiq AG (Switzerland) are unclear.</p>
+                </div>
+                <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 rounded-md shadow">
+                    <h4 class="font-bold">Claims of Independence vs. Reality</h4>
+                    <p>Asperiq's claim of being "independent" is challenged by the direct continuity of ownership and key leadership from a lineage compromised by state intelligence control. The PUK report showed Swiss authorities knew of Crypto AG's compromise for years.</p>
+                </div>
+                 <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 rounded-md shadow">
+                    <h4 class="font-bold">Export License Situation</h4>
+                    <p>CIAG's licenses were suspended due to concerns about compromised tech. While a path was cleared for Asperiq, it operates in the same sensitive domain and faces ongoing needs to prove its products are secure and declarations are truthful.</p>
+                </div>
+                <div class="bg-rose-50 border-l-4 border-rose-500 text-rose-700 p-4 rounded-md shadow">
+                    <h4 class="font-bold">Potential for Inherited Vulnerabilities</h4>
+                    <p>Concerns exist that design flaws, undocumented features, or backdoors from Crypto AG's compromised era could persist in Asperiq's products, despite claims of new development and customer verifiability.</p>
+                </div>
+            </div>
+            <p class="mt-6 italic text-gray-700">Fundamentally, Asperiq sells trust. Its existence is an attempt to decouple from a damaging legacy. The lack of transparency and continuity of personnel make its claims of a fresh start difficult to accept without rigorous, independent verification.</p>
+        </section>
+
+        <section id="conclusion" class="content-section">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-6">Conclusion and Outlook</h2>
+            <p class="mb-4">Asperiq positions itself as a modern high-security provider, but its operations are shadowed by its direct lineage from Crypto AG via CIAG, under the continuous ownership of Andreas and Emma Linde. Its core challenge is overcoming the profound trust deficit created by the Crypto AG scandal. Claims of independence and new technology are weighed against this history, the controversial CIAG-Asperiq transition, and personnel continuity.</p>
+            
+            <h3 class="text-xl font-semibold text-teal-600 mb-3">Key Risks & Considerations for Stakeholders:</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+                <li><strong>Reputational Risk:</strong> Association with Asperiq carries risks linked to the Crypto AG scandal.</li>
+                <li><strong>Trust Deficit:</strong> Overcoming skepticism from Crypto AG's history requires extraordinary proof.</li>
+                <li><strong>Operational Transparency:</strong> Lack of clarity on the CIAG to Asperiq asset/IP transfer fuels concerns.</li>
+                <li><strong>Security Assurance:</strong> Claims need rigorous, independent, third-party validation due to historical manipulations.</li>
+                <li><strong>Regulatory Scrutiny:</strong> Heightened scrutiny from export authorities is likely to continue.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold text-teal-600 mb-3">Outlook:</h3>
+            <p class="mb-2">Asperiq's future depends on its ability to demonstrably prove its trustworthiness and product security. Success in markets like Malaysia, removed from the scandal's epicenter, may be crucial. While global demand for cybersecurity is high, Asperiq's history means it must work harder than competitors to win confidence.</p>
+            <p class="italic text-gray-600">Ultimately, Asperiq must ensure its technological claims are independently validated and its practices embody transparency and integrity to shed Crypto AG's long shadow.</p>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-12 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p>&copy; <span id="currentYear"></span> Interactive Report. For informational purposes only.</p>
+            <p class="text-sm text-gray-400">Based on the report "Asperiq: Navigating the Legacy of Crypto AG".</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            mobileMenuButton.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
+                }
+                // Smooth scroll
+                const targetId = link.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+        
+        // Active Nav Link Scrolling
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', navHighlighter);
+
+        function navHighlighter() {
+            let scrollY = window.pageYOffset;
+            sections.forEach(current => {
+                const sectionHeight = current.offsetHeight;
+                const sectionTop = current.offsetTop - 100; // Adjusted for sticky nav height
+                let sectionId = current.getAttribute('id');
+                
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight){
+                    document.querySelector('nav a[href*=' + sectionId + ']').classList.add('active', 'text-teal-600');
+                } else {
+                    document.querySelector('nav a[href*=' + sectionId + ']').classList.remove('active', 'text-teal-600');
+                }
+            });
+        }
+
+
+        // Timeline Data
+        const timelineData = [
+            { date: "Pre-2018", event: "Crypto AG operations; secret CIA/BND ownership." },
+            { date: "Feb 1, 2018", event: "Andreas Linde acquires Crypto AG's international business, forms Crypto International AG (CIAG). CyOne Security AG formed for Swiss market." },
+            { date: "Feb 11, 2020", event: "Crypto AG scandal publicly revealed by media." },
+            { date: "Feb/Mar 2020", event: "SECO suspends CIAG's general export license; police raid CIAG offices." },
+            { date: "June 19, 2020", event: "Swiss Federal Council suspends CIAG's individual export license applications." },
+            { date: "July 3, 2020", event: "CIAG announces mass layoffs (83 of 85 staff in Switzerland)." },
+            { date: "July 4 / Aug 4, 2020", event: "Asperiq AG registered by Andreas and Emma Linde in Switzerland." },
+            { date: "Aug 7, 2020", event: "Asperiq AG registration becomes effective." },
+            { date: "Aug 27, 2020", event: "NZZ reports CIAG filed for bankruptcy; activities to be taken over by Swedish Asperiq Group AB." },
+            { date: "Nov 2, 2020", event: "PUK GPDel report on Crypto AG published, criticizing SECO's actions and recommending processing of export licenses." },
+            { date: "Dec 31, 2020", event: "Swiss government instructs SECO to examine/approve suspended export applications for CIAG/TCG Legacy." }
+        ];
+
+        const timelineContainer = document.getElementById('timeline-container');
+        timelineData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'timeline-item';
+            div.innerHTML = `
+                <div class="timeline-dot"></div>
+                <div class="ml-2">
+                    <p class="font-semibold text-teal-600">${item.date}</p>
+                    <p class="text-gray-700">${item.event}</p>
+                </div>
+            `;
+            timelineContainer.appendChild(div);
+        });
+
+        // Leadership Data
+        const leadershipData = [
+            { name: "Andreas Linde", role: "Founder, President of Board (Asperiq Group AG, Switzerland)", history: "Owner, Crypto International AG; CEO/Board Member, Advenica AB. Co-founded Famco Group and 4C Strategies." },
+            { name: "Emma Victoria Linde", role: "Board Member (Asperiq Group AG & Asperiq AG, Switzerland)", history: "Owner, Crypto International AG." },
+            { name: "Jürg Eiholzer", role: "CISO & Compliance Officer", history: "CISO & Compliance Officer (Crypto International AG); Chief Information Security Officer & Manager Security Architectures, Senior Software Engineer (Crypto AG - since 1987). Was in senior security role at Crypto AG during CIA/BND ownership." },
+            { name: "Christoph Kupper", role: "SVP Sales / VP & Chief Sales Officer", history: "VP & Head of Sales Asia Pacific (Crypto International AG); VP (Crypto - cybersecurity solutions, likely Crypto AG or transition phase from 2016)." },
+            { name: "Kristoffer Franzkeit", role: "General Counsel, Management & Board (Asperiq AB, Sweden)", history: "General Counsel (Famco Group - co-founded by A. Linde)."},
+            { name: "Martin Ranhed", role: "Chief Technology Officer", history: "Details on previous roles not extensively covered in source for this section." },
+            { name: "Samuel Alves", role: "Head of Product Management Services", history: "Details on previous roles not extensively covered in source for this section." },
+            { name: "Kah Kin Ho", role: "Head of Cyber Security", history: "Visible in Southeast Europe/Asia Pacific context. Office in Malaysia." }
+        ];
+
+        const leadershipContainer = document.getElementById('leadership-container');
+        leadershipData.forEach(person => {
+            const card = document.createElement('div');
+            card.className = 'expandable-card bg-white p-4 rounded-lg shadow border border-gray-200 cursor-pointer hover:shadow-md transition-shadow';
+            card.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <h4 class="text-md font-semibold text-gray-800">${person.name}</h4>
+                    <span class="text-teal-500 text-xs">▼ Click to expand</span>
+                </div>
+                <p class="text-sm text-gray-600">${person.role}</p>
+                <div class="details mt-2 text-sm text-gray-600">
+                    <p><strong>Previous/Key Info:</strong> ${person.history}</p>
+                </div>
+            `;
+            leadershipContainer.appendChild(card);
+        });
+
+        // Products Data
+        const productsData = [
+            { name: "IP-VPN Encryption Platform", description: "Built on Asperiq Hardware Security Trust Anchor. For SECRET/TOP SECRET comms. Up to 1 Gbps transmission. Hardware-based encryption in tamper-proof housing." },
+            { name: "Hardware Security Trust Anchor (HSTA)", description: "Core component by 'own top security specialists'. Allows client control/verification of crypto algorithms and implementation. Likely derived from Crypto AG/CIAG IP." },
+            { name: "Quantum-Safe Encryption Technology", description: "Integrated into security architecture to address future quantum computing threats. Forward-looking, but foundational trust is key." },
+            { name: "Asperiq IQ Connect Mobile Solution", description: "End-to-end encrypted mobile communication (voice, IM, video) for commercial smartphones. On-premise deployment, 256-bit encryption." },
+            { name: "ASPERIQ C3 System", description: "Encrypted Command, Control, and Communications system for military/civilian situational awareness. Interoperable with legacy/modern systems." },
+            { name: "IQS Series", description: "Flexible message handling for Tactical Data Link and text/media messages. Encrypted transport over satellite, radio, fixed lines." },
+            { name: "Secure Remote Access (IQN-4300 PSD)", description: "Portable device for secure remote IP VPN, personal high-security storage, multi-factor authentication. Incorporates HSTA." },
+            { name: "Security Services", description: "Includes Security Governance (policy, roadmaps), Security Assessment (needs/risk analysis), Secure Integration (design, deployment), and Secure Operations (support, maintenance)." }
+        ];
+        
+        const productsContainer = document.getElementById('products-container');
+        productsData.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'expandable-card bg-white p-4 rounded-lg shadow border border-gray-200 cursor-pointer hover:shadow-md transition-shadow';
+            card.innerHTML = `
+                <div class="flex justify-between items-center">
+                     <h4 class="text-md font-semibold text-gray-800">${product.name}</h4>
+                     <span class="text-teal-500 text-xs">▼ Click to expand</span>
+                </div>
+                <div class="details mt-2 text-sm text-gray-600">
+                    <p>${product.description}</p>
+                </div>
+            `;
+            productsContainer.appendChild(card);
+        });
+
+        document.querySelectorAll('.expandable-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('open');
+                const arrow = card.querySelector('span');
+                if (card.classList.contains('open')) {
+                    arrow.innerHTML = '▲ Click to collapse';
+                } else {
+                    arrow.innerHTML = '▼ Click to expand';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
